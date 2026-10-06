@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>시안 A · 카탈로그</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f6ecd9;
+    --ink: #1c1a17;
+    --muted: #5c564c;
+    --rule: #1c1a17;
+    --dot: #e2231a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 14px/1.5 "Jost", "Noto Sans KR", sans-serif;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* 상단 바: 참고 이미지 1의 EN / MENU / CART 구조 */
+  .topbar {
+    position: sticky; top: 0; z-index: 10;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+    padding: 14px 32px;
+    background: linear-gradient(var(--paper) 70%, transparent);
+    font-size: 13px; letter-spacing: .08em; text-transform: uppercase;
+  }
+  .topbar .right { justify-self: end; }
+
+  .intro {
+    max-width: 1180px; margin: 24px auto 40px; padding: 0 32px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: end;
+    border-bottom: 1px solid var(--rule); padding-bottom: 28px;
+  }
+  .intro .kicker { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .intro h1 { margin: 8px 0 0; font: 700 34px/1.2 "Noto Sans KR", sans-serif; letter-spacing: -.02em; }
+  .intro p { margin: 0; color: var(--muted); font-family: "Noto Sans KR", sans-serif; }
+
+  .filters {
+    max-width: 1180px; margin: 0 auto 28px; padding: 0 32px;
+    display: flex; flex-wrap: wrap; gap: 8px 22px;
+    font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+  }
+  .filters a { padding-bottom: 2px; border-bottom: 1px solid transparent; }
+  .filters a.on, .filters a:hover { border-color: var(--ink); }
+
+  /* 4열 그리드 + 세로 구분선 */
+  .grid {
+    max-width: 1180px; margin: 0 auto; padding: 0 32px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+  }
+  .card {
+    padding: 0 22px 48px;
+    border-right: 1px solid var(--rule);
+  }
+  .card:nth-child(4n) { border-right: 0; }
+  .card:nth-child(4n+1) { padding-left: 0; }
+  .card .thumb {
+    aspect-ratio: 1; background: #e6dcc6; overflow: hidden;
+  }
+  .card .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; filter: contrast(1.05); }
+  .card .meta { margin: 14px 0 4px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .card h3 { margin: 0 0 12px; font: 500 15px/1.35 "Noto Sans KR", sans-serif; min-height: 2.7em; }
+  .rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+  .rows li {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 0; border-bottom: 1px solid var(--rule);
+    font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
+  }
+  .rows li span:last-child { margin-left: auto; font-family: "Noto Sans KR", sans-serif; text-transform: none; letter-spacing: 0; }
+  .ico { width: 14px; text-align: center; font-size: 16px; line-height: 1; }
+  .ico.dot { width: 12px; height: 12px; border-radius: 50%; background: var(--dot); margin: 0 1px; }
+  .rows li.act { cursor: pointer; }
+  .rows li.act:hover { background: rgba(0,0,0,.04); }
+
+  /* 페이지네이션: 점선 + 사각 버튼 */
+  .pager {
+    max-width: 1180px; margin: 20px auto 0; padding: 0 32px 60px;
+    border-top: 2px dashed var(--rule); padding-top: 24px;
+    display: flex; justify-content: center; gap: 8px;
+  }
+  .pager a { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--ink); font-size: 13px; }
+  .pager a.on { background: var(--ink); color: var(--paper); }
+
+  footer {
+    border-top: 1px solid var(--rule);
+    max-width: 1180px; margin: 0 auto; padding: 20px 32px 40px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+  }
+
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .card { border-right: 1px solid var(--rule); padding: 0 16px 40px; }
+    .card:nth-child(4n) { border-right: 1px solid var(--rule); }
+    .card:nth-child(2n) { border-right: 0; }
+    .card:nth-child(2n+1) { padding-left: 0; }
+    .card:nth-child(2n) { padding-right: 0; }
+    .intro { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    .topbar, .intro, .filters, .grid, .pager, footer { padding-left: 16px; padding-right: 16px; }
+    .grid { grid-template-columns: 1fr; }
+    .card, .card:nth-child(n) { border-right: 0; padding: 0 0 36px; }
+    .intro h1 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="#">KO / EN</a>
+  <a href="#">Menu</a>
+  <a class="right" href="#">찾아보기 (10)</a>
+</header>
+
+<section class="intro">
+  <div>
+    <div class="kicker">Suwon City Council Archive · Chapter II</div>
+    <h1>수원시의원들의<br>사회적 배경</h1>
+  </div>
+  <p>『수원시의원으로 살다』 2장에 수록된 사진·신문·선거 자료를 한 장의 목록으로 모았습니다. 1920년대 면협의회부터 1991년 지방의회 부활 이후까지, 수원의 지역 대표들이 남긴 기록입니다.</p>
+</section>
+
+<nav class="filters">
+  <a class="on" href="#">전체</a>
+  <a href="#">식민지 시기</a>
+  <a href="#">1950년대 · 제1~3대</a>
+  <a href="#">1991 · 지방의회 부활</a>
+  <a href="#">사진</a>
+  <a href="#">신문</a>
+  <a href="#">선거자료</a>
+</nav>
+
+<main class="grid">
+  <article class="card">
+    <div class="thumb"><img src="assets/newspaper-1931.jpg" alt="동아일보 1931년 1월 19일 기사"></div>
+    <div class="meta">신문 · 1931</div>
+    <h3>면협의원 후보들의 수원 발전방안 토의</h3>
+    <ul class="rows">
+      <li><span class="ico">+</span><span>출처</span><span>동아일보</span></li>
+      <li><span class="ico">+</span><span>시기</span><span>식민지 시기</span></li>
+      <li class="act"><span class="ico">↻</span><span>자료 보기</span></li>
+      <li class="act"><span class="ico">↻</span><span>원문 PDF p.124</span></li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <div class="thumb"><img src="assets/kim-hakbae-1934.jpg" alt="김학배와 직물공장"></div>
+    <div class="meta">신문 · 1934</div>
+    <h3>김학배(제4대 수원읍회 의원)와 직물공장</h3>
+    <ul class="rows">
+      <li><span class="ico">+</span><span>출처</span><span>매일신보</span></li>
+      <li><span class="ico">+</span><span>인물</span><span>김학배</span></li>
+      <li class="act"><span class="ico dot"></span><span>읍회 의원</span><span>1939</span></li>
+      <li class="act"><span class="ico">↻</span><span>자료 보기</span></li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <div class="thumb"><img src="assets/suwon-office.jpg" alt="수원읍사무소와 수원공회당"></div>
+    <div class="meta">사진 · 일제시기</div>
+    <h3>수원읍사무소와 수원공회당</h3>
+    <ul class="rows">
+      <li><span class="ico">+</span><span>소장</span><span>수원박물관</span></li>
+      <li><span class="ico">+</span><span>장소</span><span>수원읍</span></li>
+      <li class="act"><span class="ico">↻</span><span>자료 보기</span></li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <div class="thumb"><img src="assets/cha-insun.jpg" alt="초대 전기 부의장 차인순"></div>
+    <div class="meta">사진 · 1952</div>
+    <h3>초대 전기 부의장 차인순</h3>
+    <ul class="rows">
+      <li><span class="ico">+</span><span>제공</span><span>차인순 유족</span></li>
+      <li class="act"><span class="ico dot"></span><span>제1대 의원</span><span>1952</span></li>
+      <li class="act"><span class="ico">↻</span><span>자료 보기</span></li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <div class="thumb"><img src="assets/council-1952.jpg" alt="제1대 당선 시의원 좌담회 기념 촬영"></div>
+    <div class="meta">사진 · 1952</div>
+    <h3>제1대 당선 시의원 좌담회 기념 촬영</h3>
+    <ul class="rows">
+      <li><span class="ico">+</span><span>제공</span><span>차인순 유족</span></li>
+      <li><span class="ico">+</span><span>정원</span><span>20명</span></li>
+      <li class="act"><span class="ico dot"></span><span>제1대 의회</span><span>1952</span></li>
+      <li class="act"><span class="ico">↻</span><span>자료 보기</span></li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <div class="thumb"><img src="assets/poster-1956.jpg" alt="지방자치제 실시 4주년 기념 종합운동경기대회 포스터"></div>
+    <div class="meta">포스터 · 1956</div>
+    <h3>지방자치제 실시 4주년 기념 종합운동경기대회</h3>
+    <ul class="rows">
+      <li><span class="ico">+</span><span>소장</span><span>수원박물관</span></li>
+      <li class="act"><span class="ico">↻</span><span>자료 보기</span></li>
+      <li class="act"><span class="ico">↻</span><span>원문 PDF p.137</span></li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <div class="thumb"><img src="assets/council-1991.jpg" alt="제4대 수원시의회 개원 기념사진"></div>
+    <div class="meta">사진 · 1991</div>
+    <h3>제4대 수원시의회 개원 기념사진</h3>
+    <ul class="rows">
+      <li><span class="ico">+</span><span>소장</span><span>수원시의회</span></li>
+      <li><span class="ico">+</span><span>정원</span><span>46명</span></li>
+      <li class="act"><span class="ico dot"></span><span>지방의회 부활</span><span>1991</span></li>
+      <li class="act"><span class="ico">↻</span><span>자료 보기</span></li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <div class="thumb"><img src="assets/posters-1991.jpg" alt="제4대 시의원 선거 입후보자 벽보"></div>
+    <div class="meta">선거자료 · 1991</div>
+    <h3>제4대 시의원 선거 입후보자 벽보</h3>
+    <ul class="rows">
+      <li><span class="ico">+</span><span>소장</span><span>수원박물관</span></li>
+      <li class="act"><span class="ico">↻</span><span>자료 보기</span></li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <div class="thumb"><img src="assets/leaflet-1991.jpg" alt="제4대 시의원 선거 이수연 공보"></div>
+    <div class="meta">선거자료 · 1991</div>
+    <h3>제4대 시의원 선거 이수연 후보 공보</h3>
+    <ul class="rows">
+      <li><span class="ico">+</span><span>소장</span><span>중앙선관위</span></li>
+      <li><span class="ico">+</span><span>인물</span><span>이수연</span></li>
+      <li class="act"><span class="ico">↻</span><span>자료 보기</span></li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <div class="thumb"><img src="assets/heo-youngsoon-1997.jpg" alt="허영순 위원장"></div>
+    <div class="meta">사진 · 1997</div>
+    <h3>허영순 위원장</h3>
+    <ul class="rows">
+      <li><span class="ico">+</span><span>소장</span><span>수원박물관</span></li>
+      <li class="act"><span class="ico dot"></span><span>여성 의원</span><span>1990s</span></li>
+      <li class="act"><span class="ico">↻</span><span>자료 보기</span></li>
+    </ul>
+  </article>
+</main>
+
+<nav class="pager">
+  <a class="on" href="#">1</a><a href="#">2</a><a href="#">3</a><a href="#">…</a><a href="#">→</a>
+</nav>
+
+<footer>
+  <span>수원시의회 디지털 아카이브</span>
+  <span>Powered by Omeka S</span>
+</footer>
+
+</body>
+</html>

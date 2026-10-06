@@ -1,0 +1,38 @@
+services:
+
+  omekas:
+    image: giocomai/omeka-s-docker:v4.2.1
+    container_name: omekas
+    depends_on:
+      - omekas_db
+    ports:
+      - "8000:80"
+    restart: unless-stopped
+    environment:
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_HOST: omekas_db
+      OMEKA_THEMES: https://github.com/omeka-s-themes/default
+      OMEKA_ADMIN_EMAIL: ${OMEKA_ADMIN_EMAIL}
+      OMEKA_ADMIN_NAME: ${OMEKA_ADMIN_NAME}
+      OMEKA_ADMIN_PASSWORD: ${OMEKA_ADMIN_PASSWORD}
+      OMEKA_SITE_TITLE: ${OMEKA_SITE_TITLE}
+    volumes:
+      - omekas:/var/www/html/volume
+
+  omekas_db:
+    image: mysql:8.4
+    container_name: omekas_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - omeka_db:/var/lib/mysql
+
+volumes:
+  omeka_db:
+  omekas:

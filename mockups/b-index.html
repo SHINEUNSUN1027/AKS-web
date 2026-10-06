@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>시안 B · 파일 인덱스</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Black+Han+Sans&family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #2a2a24;
+    --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: #1b1b18; color: var(--ink);
+    font: 13px/1.55 "Space Mono", "Noto Sans KR", monospace;
+    overflow: hidden;
+  }
+
+  /* 서류철 스트립: 참고 이미지 2의 겹친 파일 탭 */
+  .stack { display: flex; height: 100vh; }
+  .folder {
+    --tab-top: 40px;
+    position: relative; flex: 1 1 0; min-width: 0;
+    background: var(--bg) var(--grain);
+    color: var(--fg, var(--ink));
+    border-radius: 0 10px 0 0;
+    box-shadow: -10px 0 18px rgba(0,0,0,.28);
+    transition: flex-grow .55s cubic-bezier(.2,.7,.2,1);
+    cursor: pointer;
+  }
+  .folder.open { flex-grow: 8; cursor: default; }
+  .folder:first-child { flex: 0 0 170px; cursor: default; box-shadow: none; }
+
+  /* 왼쪽으로 튀어나온 탭 */
+  .tab {
+    position: absolute; left: -30px; top: var(--tab-top);
+    width: 30px; min-height: 190px; padding: 14px 0;
+    background: var(--bg) var(--grain);
+    border-radius: 10px 0 0 10px;
+    writing-mode: vertical-rl;
+    font-size: 11px; letter-spacing: .08em; font-weight: 700;
+    display: flex; align-items: center; justify-content: flex-start; gap: 12px;
+  }
+  .tab b { font-family: "Noto Sans KR", sans-serif; font-weight: 500; font-size: 12px; }
+
+  /* 닫힌 상태: 세로 라벨 + 사진 조각 */
+  .spine {
+    position: absolute; inset: 0; padding: 26px 18px; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: space-between;
+    transition: opacity .3s;
+  }
+  .spine .code { writing-mode: vertical-rl; font-weight: 700; letter-spacing: .1em; }
+  .spine .slice {
+    position: absolute; left: 50px; right: 14px; top: 34%; bottom: 14%;
+    background-size: cover; background-position: center;
+    filter: grayscale(.4) contrast(1.05); opacity: .85;
+    border: 1px solid currentColor;
+  }
+  .spine .label { writing-mode: vertical-rl; font: 26px/1 "Black Han Sans", sans-serif; z-index: 1; }
+  .folder.open .spine { opacity: 0; pointer-events: none; }
+
+  /* 열린 상태 내용 */
+  .body {
+    position: absolute; inset: 0; padding: 34px 40px 30px 54px;
+    display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 34px;
+    opacity: 0; pointer-events: none; transition: opacity .35s .15s;
+    overflow-y: auto;
+  }
+  .folder.open .body { opacity: 1; pointer-events: auto; }
+  .body .fig { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+  .body .fig img { width: 100%; max-height: 62vh; object-fit: cover; border: 1px solid currentColor; filter: sepia(.15); }
+  .body .fig small { font-size: 11px; opacity: .8; }
+  .body .eyebrow { display: flex; justify-content: space-between; border-bottom: 1px solid currentColor; padding-bottom: 6px; font-size: 11px; letter-spacing: .1em; }
+  .body h2 { margin: 18px 0 6px; font: 54px/1 "Black Han Sans", sans-serif; letter-spacing: -.01em; }
+  .body .en { font: 22px/1 "Anton", sans-serif; letter-spacing: .04em; opacity: .75; }
+  .body p { font-family: "Noto Sans KR", sans-serif; font-size: 14px; line-height: 1.75; max-width: 34em; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid currentColor; margin-top: 20px; }
+  .stats div { padding: 10px 8px 0 0; }
+  .stats strong { display: block; font: 30px/1.1 "Anton", sans-serif; }
+  .stats span { font-size: 11px; }
+  .items { list-style: none; padding: 0; margin: 22px 0 0; border-top: 1px dashed currentColor; }
+  .items li { padding: 8px 0; border-bottom: 1px dashed currentColor; display: flex; gap: 14px; font-size: 12px; }
+  .items li span:first-child { opacity: .7; width: 72px; flex: none; }
+  .items li span:last-child { font-family: "Noto Sans KR", sans-serif; }
+
+  /* 표지 스트립 */
+  .cover { padding: 26px 22px 22px; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+  .cover h1 {
+    margin: 0; writing-mode: vertical-rl; transform: rotate(180deg);
+    font: 84px/.95 "Anton", sans-serif; letter-spacing: .01em; color: #2f3127;
+  }
+  .cover h1 em { font-style: normal; font-size: 46px; }
+  .cover .note { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 11px; line-height: 1.4; }
+  .cover .file { font-size: 11px; font-weight: 700; }
+
+  .barcode { height: 34px; width: 120px; margin: 16px 0;
+    background: repeating-linear-gradient(90deg, currentColor 0 3px, transparent 3px 5px, currentColor 5px 6px, transparent 6px 10px); }
+
+  @media (max-width: 860px) {
+    html, body { height: auto; }
+    body { overflow: visible; }
+    .stack { flex-direction: column; height: auto; }
+    .folder, .folder:first-child { flex: none; min-height: 84px; border-radius: 10px 10px 0 0; box-shadow: 0 -8px 16px rgba(0,0,0,.25); }
+    .folder.open { min-height: 0; }
+    .tab { left: auto; right: 16px; top: -26px; width: auto; height: 26px; min-height: 0; padding: 0 14px; writing-mode: horizontal-tb; border-radius: 10px 10px 0 0; }
+    .spine { position: relative; inset: auto; flex-direction: row; align-items: center; padding: 22px 16px; }
+    .spine .code, .spine .label { writing-mode: horizontal-tb; white-space: nowrap; }
+    .spine .label { font-size: 20px; }
+    .spine .slice { display: none; }
+    .folder.open .spine { display: none; }
+    .body { position: relative; inset: auto; display: none; grid-template-columns: 1fr; padding: 24px 16px 32px; gap: 18px; }
+    .folder.open .body { display: grid; }
+    .body h2 { font-size: 40px; }
+    .cover { flex-direction: row; align-items: flex-end; flex-wrap: wrap; gap: 12px; padding: 22px 16px; }
+    .cover h1, .cover .note { writing-mode: horizontal-tb; transform: none; }
+    .cover h1 { font-size: 48px; }
+    .cover h1 em { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stack">
+
+  <section class="folder" style="--bg:#8b8a78">
+    <div class="cover">
+      <h1>COUNCIL_LOG<br><em>1920–1991</em></h1>
+      <div class="note">수원시의회 디지털 아카이브<br>Type · Image · Record</div>
+      <div class="file">FILE_02//</div>
+    </div>
+  </section>
+
+  <section class="folder" style="--bg:#e9e1cc; --tab-top:60px">
+    <div class="tab">ARCHIVE LOG //</div>
+    <div class="spine">
+      <span class="code">CHAPTER_II //</span>
+      <span class="label">자치와 통치</span>
+    </div>
+    <div class="body">
+      <div>
+        <div class="eyebrow"><span>CHAPTER II · INTRODUCTION</span><span>p.120</span></div>
+        <h2>자치와<br>통치 그리고<br>정치</h2>
+        <div class="en">SELF-GOVERNMENT</div>
+        <div class="barcode"></div>
+        <p>아테네 민주정의 추첨과 도편 추방에서 출발해, 근대 대의제와 중앙집권이 지방의 자기 통치성을 어떻게 약화시켰는지를 짚습니다. 수도권의 핵심 도시인 수원이 지방자치에 유리한 조건을 가졌다는 문제의식이 이 장 전체를 관통합니다.</p>
+      </div>
+      <div>
+        <ul class="items">
+          <li><span>SECTION</span><span>자치와 통치 그리고 정치</span></li>
+          <li><span>SECTION</span><span>지방자치 부활 이전 시의원 충원과 배경</span></li>
+          <li><span>SECTION</span><span>1990년대 이후 시의원들의 특성과 사회적 배경</span></li>
+          <li><span>SECTION</span><span>주민 자치와 지방 자치</span></li>
+          <li><span>SOURCE</span><span>『수원시의원으로 살다』 2장, pp.120–153</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="folder" style="--bg:#959ca6; --tab-top:110px">
+    <div class="tab">CODE_001 // <b>식민지 시기</b></div>
+    <div class="spine">
+      <span class="code">1917–1945 //</span>
+      <div class="slice" style="background-image:url(assets/newspaper-1931.jpg)"></div>
+      <span class="label">면협의회 · 읍회</span>
+    </div>
+    <div class="body">
+      <div class="fig">
+        <img src="assets/suwon-office.jpg" alt="일제시기 수원읍사무소와 수원공회당">
+        <small>일제시기 수원읍사무소와 수원공회당 (수원박물관 소장)</small>
+      </div>
+      <div>
+        <div class="eyebrow"><span>CODE_001 // DRIFT</span><span>1917–1945</span></div>
+        <h2>식민지<br>시기</h2>
+        <div class="en">LIMITED ELECTION</div>
+        <p>1917년 지정면이 된 수원면에 면협의회가 설치되었습니다. 일정액 이상 세금을 낸 사람만 투표할 수 있는 제한선거였기에, 선출된 조선인 의원 대부분은 자산가층이었습니다.</p>
+        <div class="stats">
+          <div><strong>11,042</strong><span>1929 수원면 인구</span></div>
+          <div><strong>310</strong><span>유권자 수</span></div>
+          <div><strong>8 / 14</strong><span>1939 읍회 조선인 의석</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="folder" style="--bg:#8a6c4c; --fg:#f1e7d3; --tab-top:160px">
+    <div class="tab">CODE_002 // <b>제1~3대</b></div>
+    <div class="spine">
+      <span class="code">1952–1960 //</span>
+      <div class="slice" style="background-image:url(assets/council-1952.jpg)"></div>
+      <span class="label">초대 시의회</span>
+    </div>
+    <div class="body">
+      <div class="fig">
+        <img src="assets/council-1952.jpg" alt="제1대 당선 시의원 좌담회 기념 촬영">
+        <small>제1대 당선 시의원 좌담회 기념 촬영 (1952년, 차인순 유족 제공)</small>
+      </div>
+      <div>
+        <div class="eyebrow"><span>CODE_002 // FALLING</span><span>1952–1960</span></div>
+        <h2>해방 이후<br>제1~3대</h2>
+        <div class="en">FIRST COUNCIL</div>
+        <p>1952년 첫 시의회가 구성되었습니다. 제1대 의원 20명 가운데 14명이 농업 종사자였고, 다수가 동사무소 근무나 해방 공간의 우익 청년단 활동을 거쳐 의회에 들어왔습니다. 1961년 5·16 이후 지방의회는 해산됩니다.</p>
+        <div class="stats">
+          <div><strong>20</strong><span>제1대 정원 (1952)</span></div>
+          <div><strong>14</strong><span>제1대 농업 종사</span></div>
+          <div><strong>15</strong><span>제2·3대 정원</span></div>
+        </div>
+        <ul class="items">
+          <li><span>POSTER</span><span>지방자치제 실시 4주년 기념 종합운동경기대회 (1956)</span></li>
+          <li><span>PHOTO</span><span>초대 전기 부의장 차인순</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="folder" style="--bg:#1f1f1c; --fg:#e9e1cc; --tab-top:210px">
+    <div class="tab">CODE_003 // <b>지방의회 부활</b></div>
+    <div class="spine">
+      <span class="code">1991 //</span>
+      <div class="slice" style="background-image:url(assets/posters-1991.jpg)"></div>
+      <span class="label">SIGNAL</span>
+    </div>
+    <div class="body">
+      <div class="fig">
+        <img src="assets/council-1991.jpg" alt="제4대 수원시의회 개원 기념사진">
+        <small>제4대 수원시의회 개원 기념사진 (1991년, 수원시의회 소장)</small>
+      </div>
+      <div>
+        <div class="eyebrow"><span>CODE_003 // SIGNAL</span><span>1991</span></div>
+        <h2>30년 만의<br>부활</h2>
+        <div class="en">REVIVAL</div>
+        <p>1991년 지방의회가 30년 만에 다시 구성되었습니다. 산업화와 인구 유입으로 수원의 계층 구조가 바뀌면서, 의원들의 직업과 출신 지역도 1950년대와 크게 달라졌습니다.</p>
+        <div class="stats">
+          <div><strong>46</strong><span>제4대 정원 (1991)</span></div>
+          <div><strong>30</strong><span>공백 기간 (년)</span></div>
+          <div><strong>1991</strong><span>기초의회 선거</span></div>
+        </div>
+        <ul class="items">
+          <li><span>PHOTO</span><span>제4대 시의원 선거 입후보자 벽보</span></li>
+          <li><span>LEAFLET</span><span>이수연 후보 선거 공보</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="folder" style="--bg:#3d4335; --fg:#e9e1cc; --tab-top:260px">
+    <div class="tab">CODE_004 // <b>여성과 주민자치</b></div>
+    <div class="spine">
+      <span class="code">1990s– //</span>
+      <div class="slice" style="background-image:url(assets/heo-youngsoon-1997.jpg)"></div>
+      <span class="label">AFTER WORK</span>
+    </div>
+    <div class="body">
+      <div class="fig">
+        <img src="assets/heo-youngsoon-1997.jpg" alt="허영순 위원장">
+        <small>허영순 위원장 (1997년, 수원박물관 소장)</small>
+      </div>
+      <div>
+        <div class="eyebrow"><span>CODE_004 // AFTER WORK</span><span>1990s–</span></div>
+        <h2>여성 의원과<br>주민 자치</h2>
+        <div class="en">CIVIC TURN</div>
+        <p>1991년 제4대 의회부터 여성 의원이 나타나기 시작해 그 수가 꾸준히 늘었습니다. 시민운동 출신 의원의 등장과 함께, 지방의회는 지역 유지의 자리에서 주민 자치의 통로로 바뀌어 갑니다.</p>
+        <ul class="items">
+          <li><span>LEAFLET</span><span>제4대 의원 선거 이수연 공보 (중앙선관위 소장)</span></li>
+          <li><span>SECTION</span><span>시의원 유형 · 주민 자치와 지방 자치</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  const folders = document.querySelectorAll('.folder:not(:first-child)');
+  folders.forEach(f => f.addEventListener('click', () => {
+    folders.forEach(o => o.classList.toggle('open', o === f));
+  }));
+  folders[2].classList.add('open');
+</script>
+</body>
+</html>

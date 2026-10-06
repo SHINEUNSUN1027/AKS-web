@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>컬렉션 — 수원의회 아카이브</title>
+<meta name="description" content="수원의회 아카이브의 사진, 신문, 포스터, 선거자료, 통계표를 시기와 유형별로 찾아보세요.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Black+Han+Sans&family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="index.html">
+      <img src="assets/img/logo-mark.svg" alt="">
+      <span><b>수원의회 아카이브</b><small>SUWON COUNCIL LOG</small></span>
+    </a>
+    <nav class="nav" aria-label="주 메뉴">
+      <a href="collection.html" aria-current="page">COLLECTION<span>컬렉션</span></a>
+      <a href="exhibition.html">EXHIBITION<span>전시</span></a>
+      <a href="about.html">ABOUT<span>소개</span></a>
+    </nav>
+    <form class="head-search" action="collection.html" role="search">
+      <label class="sr-only" for="head-q">자료 검색</label>
+      <input id="head-q" name="q" type="search" placeholder="자료 검색">
+      <button type="submit" aria-label="검색">⌕</button>
+    </form>
+    <button class="menu-btn" type="button" aria-expanded="false">MENU</button>
+  </div>
+</header>
+
+<main>
+  <section class="page-head">
+    <div class="wrap">
+      <div class="eyebrow">FILE_02 // COLLECTION</div>
+      <h1>컬렉션</h1>
+      <div class="en">THE COUNCIL FILES</div>
+      <p>사진, 신문, 포스터, 선거자료, 통계표 13건을 시기별 서류철로 정리했습니다. 카드를 누르면 자료의 상세 정보와 원문 쪽수를 볼 수 있습니다.</p>
+      <div class="tabs">
+        <a class="on" href="collection.html">전체 자료</a>
+        <a href="exhibition.html">디지털 전시</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="toolbar">
+      <form class="search" role="search">
+        <label class="sr-only" for="collection-q">컬렉션 안에서 검색</label>
+        <input id="collection-q" type="search" placeholder="제목, 인물, 소장처, 주제어 검색" autocomplete="off">
+      </form>
+      <div class="chips" data-chips="era"><span>시기</span></div>
+      <div class="chips" data-chips="type"><span>유형</span></div>
+      <div class="result-count" aria-live="polite"></div>
+    </div>
+
+    <div class="cards" data-collection></div>
+    <div class="empty" hidden><strong>찾는 자료가 없습니다</strong>검색어를 바꾸거나 선택한 필터를 해제해 보세요.</div>
+    <div style="height:96px"></div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <a class="logo" href="index.html"><img src="assets/img/logo-mark.svg" alt=""><span><b>수원의회 아카이브</b><small>SUWON COUNCIL LOG</small></span></a>
+      <p>『수원시의원으로 살다』 2장 「수원시의원들의 사회적 배경」을 바탕으로 구성한 디지털 아카이브입니다. 각 자료의 저작권은 표기된 소장처에 있습니다.</p>
+    </div>
+    <div><h4>ARCHIVE</h4><ul><li><a href="collection.html">컬렉션</a></li><li><a href="exhibition.html">디지털 전시</a></li><li><a href="about.html">소개</a></li></ul></div>
+    <div><h4>ERAS</h4><ul><li><a href="collection.html?era=colonial">식민지 시기</a></li><li><a href="collection.html?era=first">제1~3대 의회</a></li><li><a href="collection.html?era=revival">지방의회 부활</a></li><li><a href="collection.html?era=civic">여성과 주민자치</a></li></ul></div>
+    <div class="bottom"><span>© 수원의회 아카이브</span><span>FILE_END //</span></div>
+  </div>
+</footer>
+
+<dialog class="viewer" aria-label="자료 상세"><button class="viewer-close" type="button" aria-label="닫기">×</button><div class="viewer-in"><div class="viewer-img"><img alt=""></div><div class="viewer-txt"></div></div></dialog>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/site.js"></script>
+</body>
+</html>
